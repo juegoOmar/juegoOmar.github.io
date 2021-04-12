@@ -1,0 +1,70 @@
+.sprite {
+    position: fixed;
+    font-size: 6rem;
+  }
+
+  body{
+    background-image: url("https://media.giphy.com/media/ui20gIWc3n9Ti/giphy.gif");
+    color: rgb(158,228,32);
+    font-family: sans-serif;
+    font-size: 20px;
+    background-repeat: no-repeat;
+    background-position-x:
+      center;
+      background-position-y:
+      center;
+      background-attachment:
+      fixed;
+      -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    background-size: cover;
+     
+  }
+
+  .limpiado{
+      clear:both;
+      float: none;
+  }
+
+  .encabezado{
+        text-align: center;
+
+        background-color: rgba(214, 27, 27, 0.233);
+  }
+
+  #instrucciones{
+    width: 40%;
+    height: 30%;
+    margin: auto;
+    text-align: center;
+    font-size: 22px;
+
+  }
+
+  button{
+    padding: 8px;
+    color: yellowgreen;
+    background-color: rgb(56, 31, 167);
+    border-radius: 30%;
+    
+  }
+
+  #instrucciones button{
+    font-size: 19px;
+    
+  }
+
+
+
+  footer{
+      text-align: center;
+      margin-top:380px;
+      padding: 20px; 
+  }
+
+  .botones{
+    border: 1px solid red;
+    float: left;
+  }
+ 
