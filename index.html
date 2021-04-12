@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0">
+  <title>Juego Omar</title>
+  <link rel="shortcut icon" href="img/88_85289.ico">
+  <link rel="stylesheet" href="css/estilos.css">
+
+
+  <script>
+    class movimiento {
+      muevete() {
+      }
+    }
+
+    class aleatorio {
+      aleatorio() {
+
+      }
+    }
+
+
+    class langosta extends HTMLElement {
+      connectedCallback() {
+
+        this.innerHTML = "🦞";
+        this.style.position = "fixed";
+        this.style.fontSize = "3rem";
+        this.VELOCIDAD = 20;
+        this.FRECUENCIA = 0.03;
+        this.x = 30;
+      }
+
+      movimiento() {
+        this.xMáxima = window.innerWidth;
+        this.amplitud = window.innerHeight / 2.7;
+        this.yBase = window.innerHeight / 2;
+        this.y = this.yBase + this.amplitud * Math.sin(this.FRECUENCIA * this.x);
+        this.style.bottom = `${this.y}px`;
+        this.x = (this.x + this.VELOCIDAD) % this.xMáxima;
+        this.style.left = `${this.x}px`;
+
+      }
+
+      choque(e1, e2) {
+        const rE1 = e1.getBoundingClientRect();
+        const rE2 = e2.getBoundingClientRect();
+        return (rE1.right >= rE2.left &&
+          rE1.left <= rE2.right &&
+          rE1.top <= rE2.bottom &&
+          rE1.bottom >= rE2.top);
+      }
+
+
+    }
+
+    customElements.define("langosta-web", langosta);
+
+
+
+    class camaron extends HTMLElement {
+      connectedCallback() {
+
+        this.innerHTML = "🦐";
+
+        this.style.position = "fixed";
+        this.style.fontSize = "2rem";
+        this.x = this.aleatorio(140, 1150);
+        this.y = this.aleatorio(0, Math.floor(window.innerWidth));
+        this.style.left = `${this.x}px`;
+        this.style.top = `${this.y}px`;
+      }
+      movimiento() {
+        this.y = (this.y + 30) % window.innerHeight;
+        this.style.top = `${this.y}px`;
+      }
+
+      aleatorio(m1, m2) {
+        return m1 + Math.floor(Math.random() * (m2 - m1 + 1));
+      }
+
+      choque(e1, e2) {
+        const rE1 = e1.getBoundingClientRect();
+        const rE2 = e2.getBoundingClientRect();
+        return (rE1.right >= rE2.left &&
+          rE1.left <= rE2.right &&
+          rE1.top <= rE2.bottom &&
+          rE1.bottom >= rE2.top);
+      }
+
+
+    }
+
+    customElements.define("camaron-web", camaron);
+
+
+
+    class barcoWeb extends HTMLElement {
+      connectedCallback() {
+
+        this.innerHTML = "⛵";
+        this.style.position = "fixed";
+        this.style.fontSize = "8rem";
+        this.VELOCIDAD = 180;
+        this.x = this.aleatorio(300,350);
+
+        this.y = this.aleatorio(40, 350);
+        this.style.top = `${this.y}px`;
+      }
+      movimiento() {
+        this.x = (this.x + this.VELOCIDAD) % window.innerWidth-40;
+        this.style.left = `${this.x}px`;
+      }
+
+      aleatorio(menor, mayor) {
+        return menor + Math.floor(Math.random() * (mayor - menor + 1));
+      }
+
+      choque(e1, e2) {
+        const rE1 = e1.getBoundingClientRect();
+        const rE2 = e2.getBoundingClientRect();
+        return (rE1.right >= rE2.left &&
+          rE1.left <= rE2.right &&
+          rE1.top <= rE2.bottom &&
+          rE1.bottom >= rE2.top);
+      }
+
+
+    }
+    customElements.define("barco-web", barcoWeb);
+
+
+    class pez extends HTMLElement {
+      connectedCallback() {
+
+        this.yBase = window.innerHeight / 10;
+        this.xMenor = window.innerWidth / 11;
+        this.xMayor = 4 * window.innerWidth / 5;
+        this.yMayor = 3 * window.innerWidth / 9;
+        this.x = this.xMenor;
+        this.y = this.yBase;
+
+        this.puntuacion = 0;
+        this.VELOCIDAD = 50;
+        this.innerHTML = "🐟";
+        this.style.position = "fixed";
+        this.style.fontSize = "4rem";
+        this.style.bottom = `${20}px`;
+
+      }
+
+      pinta(v1, v2) {
+        this.style.left = `${v1}px`;
+        this.style.bottom = `${v2}px`;
+      }
+
+      avanza() {
+        if (this.x < this.xMayor) {
+          this.x += this.VELOCIDAD;
+        }
+        this.pinta(this.x, this.y);
+      }
+      retrocede() {
+        if (this.x > this.xMenor) {
+          this.x -= this.VELOCIDAD;
+        }
+        this.pinta(this.x, this.y);
+      }
+      arriba() {
+
+        if (this.y < this.yMayor) {
+          this.y += this.VELOCIDAD;
+        }
+        this.pinta(this.x, this.y);
+      }
+      abajo() {
+        if (this.y > this.yBase) {
+          this.y -= this.VELOCIDAD;
+        }
+        this.pinta(this.x, this.y);
+      }
+    }
+    customElements.define("pez-web", pez);
+
+  </script>
+</head>
+
+<body >
+  <div class="encabezado">
+    <h1>Nemo Feliz</h1>
+    <h3><strong id="puntos">Puntos</strong></h3>
+  </div>
+
+  <div id="instrucciones">
+    <h1>Bienvenido a nemo feliz</h1>  
+    <p>Atrapa los camarones para juntar 100 puntos, ten cuidado con los barcos para no perder puntos, si te atrapa la langosta
+      pierdes
+    </p>
+    <button id="continuar">Continuar</button>
+  </div>
+
+
+  <inicializador-web id="contenido">
+   
+  </inicializador-web>
+  <script>
+
+    let contenido = document.getElementById("contenido");
+    let puntos = document.getElementById("puntos");
+    let puntuacion = 0;
+    console.log(contenido);
+
+    class usuario {
+      constructor() {
+        this._puntaje = 0;
+      }
+      get puntaje() {
+        return this._puntaje;
+      }
+      set puntaje(puntaje) {
+        this._puntaje = puntaje;
+      }
+      get puntos() {
+        return `${this.puntaje} PUNTOS`;
+      }
+    }
+
+
+    let star=document.getElementById("continuar");
+    let indicaciones=document.getElementById("instrucciones");
+
+    star.addEventListener('click',function(){
+      indicaciones.style.display="none";
+      class InicializadorWeb extends HTMLElement {
+      connectedCallback() {
+        const div = document.createElement("div");
+        div.classList.add('botones');
+        console.log(div);
+        
+
+        this.muévete = this.muévete.bind(this);
+        this.retrocede = this.retrocede.bind(this);
+        this.arriba = this.arriba.bind(this);
+        this.abajo = this.abajo.bind(this);
+        document.body.appendChild(div);
+        this.innerHTML =
+          `
+              
+            <button  style="margin-top:430px";
+              onclick="this.
+                parentElement.
+                retrocede();">
+                🡸
+            </button>
+            <button 
+              onclick="this.
+                parentElement.
+                muévete();">
+                🢂
+            </button>
+            <button
+              onclick="this.
+                parentElement.
+                arriba();">
+                🡹
+            </button>
+            <button
+              onclick="this.
+                parentElement.
+                abajo();">
+                🡻
+                
+            </button>
+         
+            `
+        let usu = new usuario(0);
+        let f = this.pezcado = new pez();
+        let b = this.barco = new barcoWeb();
+        let b2 = this.barco = new barcoWeb();
+        let lango = new langosta();
+
+        puntos.innerHTML = usu.puntos;
+
+        contenido.append(this.pezcado);
+        contenido.append(lango);
+        contenido.append(b);
+        contenido.append(b2);
+
+
+        setInterval(function () {
+          lango.movimiento();
+          b.movimiento();
+          b2.movimiento();
+        
+
+          if (b.choque(f, b) || b2.choque(f,b2)) {
+              let p=parseInt(usu.puntos)-50;
+              usu.puntaje=p;
+              puntos.innerText = usu.puntos;            
+          }
+
+          else if(lango.choque(f, lango)){
+            let p=parseInt(usu.puntos)-100;
+              usu.puntaje=p;
+              puntos.innerText = usu.puntos;
+              alert("perdiste te atrapo la langosta")
+          }
+
+          let c = new camaron();
+
+          console.log("hola");
+          setInterval(() => {
+            c.movimiento();
+            if (c.choque(f, c)) {
+              usu.puntaje = puntuacion++;
+              puntos.innerText = usu.puntos;
+
+              if (usu.puntaje >= 100) {
+                alert("Haz ganado llegaste a los 100 puntos");
+              }
+            }
+          }, 140);
+          contenido.append(c);
+        }, 420);
+
+      }
+
+      muévete() {
+        this.pezcado.avanza();
+      }
+      retrocede() {
+        this.pezcado.retrocede();
+      }
+      arriba() {
+        this.pezcado.arriba();
+      }
+      abajo() {
+        this.pezcado.abajo();
+      }
+    }
+      
+    customElements.define("inicializador-web", InicializadorWeb);
+    });
+
+
+   
+  </script>
+
+<footer >
+  <p>
+    &copy;Najera Rodriguez Omar Daniel
+  </p>
+</footer>
+
+</body>
+
+</html>
